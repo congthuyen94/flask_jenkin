@@ -12,7 +12,8 @@ pipeline {
         stage ('Building image') {
             steps {
                 script {
-                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                    def tag = readFile(file: 'version.txt')
+                    dockerImage = docker.build registry + ":$tag"
                 }
             }
         }
