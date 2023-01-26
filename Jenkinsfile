@@ -1,30 +1,29 @@
-pipeline{
+pipeline {
     agent any
-    options{
+    options {
         buildDiscarder(logRotator(numToKeepStr: '5', daysToKeepStr: '5'))
         timestamps()
     }
-    environment{
-        
+    environment {
         registry = "thuyennc/flask"
-        registryCredential = 'dockerhub'        
+        registryCredential = 'dockerhub'
     }
-    
-    stages{
-       stage('Building image') {
-      steps{
-        script {
-          dockerImage = docker.build registry + ":$BUILD_NUMBER"
+    stages {
+        stage ('Building image') {
+            steps {
+                script {
+                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                }
+            }
         }
-      }
-    }
-       stage('Deploy Image') {
-      steps{
-         script {
-            docker.withRegistry( '', registryCredential ) {
-            dockerImage.push()
-          }
+        stage ('Deploy Image') {
+            steps {
+                script {
+                    docker.withRegistry( '', registryCredential ) {
+                        dockerImage.push()
+                    }
+                }
+            }
         }
-      }
     }
 }
